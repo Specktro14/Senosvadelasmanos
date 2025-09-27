@@ -8,12 +8,18 @@ export async function AuthButton() {
 
   // You can also use getUser() which will be slower.
   const { data } = await supabase.auth.getClaims();
-
+  
   const user = data?.claims;
+
+  const { data: profile } = await supabase
+  .from("profiles")
+  .select("display_name")
+  .eq("id", user?.sub)
+  .single()
 
   return user ? (
     <div className="flex items-center gap-4">
-      Hey, {user.email}!
+      Hey, {profile?.display_name ?? "User"}!
       <LogoutButton />
     </div>
   ) : (
